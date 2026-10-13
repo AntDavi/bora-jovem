@@ -31,3 +31,7 @@ DB_PATH=jovens.db .venv/bin/python dashboard.py        # http://localhost:8765 (
 ## Dashboard público (demo)
 
 O `render.yaml` publica o painel no Render com **dados fictícios** gerados por `seed_demo.py` a cada start. Nunca aponte o painel público para o `jovens.db` real: ele não tem login.
+
+### GitHub Pages (versão estática)
+
+`python build_pages.py` gera `docs/` com o painel e os CSVs a partir de dados fictícios. No GitHub: **Settings → Pages → Deploy from a branch → `main` / `/docs`**. Para atualizar, rode o script de novo e faça commit.

@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bora Jovem · Painel</title>
+<style>
+:root{--bg:#f6f5f2;--card:#fff;--ink:#1c1b19;--mute:#6b6963;--line:#e6e3dc;--acc:#1f7a4d;--acc2:#e0a526;--bad:#c4452f}
+@media (prefers-color-scheme:dark){:root{--bg:#161614;--card:#201f1c;--ink:#f1efe9;--mute:#9b978d;--line:#34322d;--acc:#4cc38a;--acc2:#e8b84a;--bad:#ef7a64}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,sans-serif}
+main{max-width:1100px;margin:0 auto;padding:24px 16px 48px}
+h1{font-size:22px;margin:0}
+.sub{color:var(--mute);margin:2px 0 20px;font-size:13px}
+h2{font-size:15px;margin:0 0 12px}
+.grid{display:grid;gap:12px}
+.kpis{grid-template-columns:repeat(auto-fit,minmax(150px,1fr));margin-bottom:12px}
+.two{grid-template-columns:repeat(auto-fit,minmax(320px,1fr));margin-bottom:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px}
+.kpi b{display:block;font-size:28px;font-variant-numeric:tabular-nums;letter-spacing:-.5px}
+.kpi span{color:var(--mute);font-size:12px}
+.row{display:grid;grid-template-columns:minmax(110px,190px) 1fr 40px;gap:8px;align-items:center;margin:7px 0;font-size:13px}
+.track{height:10px;background:var(--line);border-radius:5px;overflow:hidden}
+.fill{height:100%;background:var(--acc);border-radius:5px}
+.num{text-align:right;color:var(--mute);font-variant-numeric:tabular-nums}
+.trilha{padding:10px 0;border-top:1px solid var(--line)}
+.trilha:first-of-type{border-top:0}
+.trilha h3{font-size:14px;margin:0 0 4px;display:flex;justify-content:space-between;gap:8px}
+.trilha small{color:var(--mute);font-size:12px}
+.funil{display:flex;gap:4px;align-items:flex-end;height:44px;margin-top:8px}
+.funil div{flex:1;background:var(--acc);border-radius:3px 3px 0 0;min-height:2px;opacity:.85}
+.chart{display:flex;gap:4px;align-items:flex-end;height:120px}
+.chart .col{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:4px;height:100%}
+.chart .bar{width:100%;background:var(--acc);border-radius:3px 3px 0 0;min-height:2px}
+.chart small{font-size:10px;color:var(--mute)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{text-align:left;padding:8px 6px;border-top:1px solid var(--line)}
+th{color:var(--mute);font-weight:500;font-size:12px;border-top:0}
+.warn{color:var(--bad)}
+.ph{font-size:12px;color:var(--mute);font-weight:500;margin:0 0 4px}
+.exp{display:flex;gap:8px;flex-wrap:wrap}
+.exp a{display:inline-block;padding:8px 12px;border:1px solid var(--line);border-radius:8px;color:var(--ink);text-decoration:none;font-size:13px}
+.exp a:hover{border-color:var(--acc);color:var(--acc)}
+.err{background:var(--bad);color:#fff;padding:10px;border-radius:8px;display:none;margin-bottom:12px}
+</style>
+</head>
+<body>
+<main>
+  <h1>Bora Jovem · Painel</h1>
+  <p class="sub">Como o Bora Jovem está funcionando e como os alunos estão progredindo · atualiza a cada 5s · <span id="upd"></span></p>
+  <div class="err" id="err"></div>
+  <div class="grid kpis" id="kpis"></div>
+  <div class="grid two">
+    <div class="card"><h2>Atividade nos últimos 14 dias</h2><div class="chart" id="atividade"></div>
+      <p class="sub" style="margin:8px 0 0">Barras = lições concluídas por dia</p></div>
+    <div class="card"><h2>Por bairro</h2><div id="bairros"></div></div>
+  </div>
+  <div class="card" style="margin-bottom:12px"><h2>Perfil dos jovens <small id="perfil-n" style="color:var(--mute);font-weight:400"></small></h2>
+    <div class="grid two" style="margin:0"><div><h3 class="ph">Situação</h3><div id="p-sit"></div></div>
+    <div><h3 class="ph">Objetivo</h3><div id="p-obj"></div></div>
+    <div><h3 class="ph">O que gostam de fazer</h3><div id="p-gos"></div></div></div></div>
+  <div class="card" style="margin-bottom:12px"><h2>Trilhas: onde os alunos avançam e onde travam</h2><div id="trilhas"></div></div>
+  <div class="card" id="sec-exp" style="margin-bottom:12px"><h2>Exportar dados</h2>
+    <div class="exp">
+      <a href="export/alunos.csv" download>⬇ Alunos (CSV)</a>
+      <a href="export/progresso.csv" download>⬇ Progresso por trilha (CSV)</a>
+      <a href="export/eventos.csv" download>⬇ Histórico de eventos (CSV)</a>
+      <a href="#" id="exp-json">⬇ Resumo do painel (JSON)</a>
+    </div>
+    <p class="sub" style="margin:8px 0 0">Arquivos CSV abrem direto no Excel ou Google Sheets.</p></div>
+  <div class="card" id="sec-alunos"><h2>Alunos recentes</h2><div style="overflow-x:auto"><table id="alunos"></table></div></div>
+</main>
+<script>
+// No servidor Python usa /api/stats; no GitHub Pages (estático) cai para data.json
+async function dados(){
+  try { const r = await fetch('api/stats'); if (r.ok) return await r.json(); } catch (e) {}
+  const r = await fetch('data.json'); return await r.json();
+}
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function kpi(v, l){return `<div class="card kpi"><b>${v}</b><span>${l}</span></div>`}
+function render(d){
+  $('sec-exp').style.display = $('sec-alunos').style.display = d.publico ? 'none' : '';
+  const k = d.kpis;
+  $('kpis').innerHTML = kpi(k.total,'alunos cadastrados') + kpi(k.ativos_7d,'ativos nos últimos 7 dias') + kpi(k.novos_7d,'novos nos últimos 7 dias')
+    + kpi(k.engajamento+'%','já começaram uma trilha') + kpi(k.licoes,'lições concluídas') + kpi(k.licoes_por_aluno,'lições por aluno')
+    + kpi(k.trilhas_concluidas,'trilhas concluídas') + kpi(k.conclusao+'%','taxa de conclusão') + kpi(k.consultas_vagas,'consultas a vagas');
+  const max = Math.max(1, ...d.atividade.map(a => a.licoes));
+  $('atividade').innerHTML = d.atividade.map(a => `<div class="col" title="${a.dia}: ${a.licoes} lições, ${a.novos} novos"><small>${a.licoes||''}</small><div class="bar" style="height:${a.licoes/max*85}%"></div><small>${a.dia.slice(8)}</small></div>`).join('');
+  const bars = l => { const m = Math.max(1, ...l.map(x => x.n)); return l.map(x => `<div class="row"><span>${esc(x.rotulo)}</span><div class="track"><div class="fill" style="width:${x.n/m*100}%"></div></div><span class="num">${x.n}</span></div>`).join(''); };
+  const p = d.perfil;
+  $('perfil-n').textContent = `· ${p.respondeu} de ${k.total} responderam · ${p.nemnem} sem estudar nem trabalhar`;
+  $('p-sit').innerHTML = bars(p.situacoes); $('p-obj').innerHTML = bars(p.objetivos); $('p-gos').innerHTML = bars(p.gostos);
+  const mb = Math.max(1, ...d.bairros.map(b => b.alunos));
+  $('bairros').innerHTML = d.bairros.length ? d.bairros.map(b => `<div class="row"><span>${esc(b.bairro)}</span><div class="track"><div class="fill" style="width:${b.alunos/mb*100}%"></div></div><span class="num">${b.alunos} · ${b.consultas_vagas}💼</span></div>`).join('') + '<p class="sub" style="margin:8px 0 0">alunos · consultas a vagas</p>' : '<p class="sub">Sem dados ainda.</p>';
+  $('trilhas').innerHTML = d.trilhas.map(t => {
+    const m = Math.max(1, ...t.funil);
+    const gargalo = t.funil.reduce((best, v, i) => (i > 0 && t.funil[i-1] - v > best.drop ? {i, drop: t.funil[i-1] - v} : best), {i:-1, drop:0});
+    return `<div class="trilha"><h3><span>${esc(t.nome)}</span><small>${t.iniciaram} iniciaram · ${t.concluiram} concluíram${t.requisitos.length ? ' · exige '+esc(t.requisitos.join(', ')) : ''}</small></h3>
+      <div class="funil" title="Alunos que chegaram em cada lição">${t.funil.map((v,i)=>`<div style="height:${v/m*100}%" title="Lição ${i+1}: ${v}"></div>`).join('')}</div>
+      <small>${gargalo.drop ? `<span class="warn">Maior queda: entre as lições ${gargalo.i} e ${gargalo.i+1} (−${gargalo.drop})</span> · ` : ''}${t.bloqueios} tentativas bloqueadas por pré-requisito</small></div>`;
+  }).join('');
+  $('alunos').innerHTML = '<tr><th>Nome</th><th>Bairro</th><th>Trilha ativa</th><th>Lições</th><th>Última atividade</th></tr>'
+    + d.alunos.map(a => `<tr><td>${esc(a.nome)}</td><td>${esc(a.bairro||'—')}</td><td>${esc(a.trilha_nome||'—')}</td><td>${a.licoes}</td><td>${esc(a.ultimo||'—')}</td></tr>`).join('');
+}
+async function load(){
+  try{
+    const d = await dados();
+    if(d.erro){ $('err').style.display='block'; $('err').textContent='Erro no banco: '+d.erro; return; }
+    $('err').style.display='none'; render(d); $('upd').textContent = new Date().toLocaleTimeString('pt-BR');
+  }catch(e){ $('err').style.display='block'; $('err').textContent='Sem conexão com o servidor do painel.'; }
+}
+$('exp-json').onclick = async e => {
+  e.preventDefault();
+  const blob = new Blob([JSON.stringify(await dados(), null, 2)], {type: 'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'bora-jovem-resumo.json'; a.click();
+};
+load(); setInterval(load, 5000);
+</script>
+</body>
+</html>

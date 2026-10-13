@@ -62,15 +62,20 @@ th{color:var(--mute);font-weight:500;font-size:12px;border-top:0}
   <div class="card" style="margin-bottom:12px"><h2>Trilhas: onde os alunos avançam e onde travam</h2><div id="trilhas"></div></div>
   <div class="card" id="sec-exp" style="margin-bottom:12px"><h2>Exportar dados</h2>
     <div class="exp">
-      <a href="/export/alunos.csv" download>⬇ Alunos (CSV)</a>
-      <a href="/export/progresso.csv" download>⬇ Progresso por trilha (CSV)</a>
-      <a href="/export/eventos.csv" download>⬇ Histórico de eventos (CSV)</a>
+      <a href="export/alunos.csv" download>⬇ Alunos (CSV)</a>
+      <a href="export/progresso.csv" download>⬇ Progresso por trilha (CSV)</a>
+      <a href="export/eventos.csv" download>⬇ Histórico de eventos (CSV)</a>
       <a href="#" id="exp-json">⬇ Resumo do painel (JSON)</a>
     </div>
     <p class="sub" style="margin:8px 0 0">Arquivos CSV abrem direto no Excel ou Google Sheets.</p></div>
   <div class="card" id="sec-alunos"><h2>Alunos recentes</h2><div style="overflow-x:auto"><table id="alunos"></table></div></div>
 </main>
 <script>
+// No servidor Python usa /api/stats; no GitHub Pages (estático) cai para data.json
+async function dados(){
+  try { const r = await fetch('api/stats'); if (r.ok) return await r.json(); } catch (e) {}
+  const r = await fetch('data.json'); return await r.json();
+}
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function kpi(v, l){return `<div class="card kpi"><b>${v}</b><span>${l}</span></div>`}
@@ -100,14 +105,14 @@ function render(d){
 }
 async function load(){
   try{
-    const d = await (await fetch('/api/stats')).json();
+    const d = await dados();
     if(d.erro){ $('err').style.display='block'; $('err').textContent='Erro no banco: '+d.erro; return; }
     $('err').style.display='none'; render(d); $('upd').textContent = new Date().toLocaleTimeString('pt-BR');
   }catch(e){ $('err').style.display='block'; $('err').textContent='Sem conexão com o servidor do painel.'; }
 }
 $('exp-json').onclick = async e => {
   e.preventDefault();
-  const blob = new Blob([JSON.stringify(await (await fetch('/api/stats')).json(), null, 2)], {type: 'application/json'});
+  const blob = new Blob([JSON.stringify(await dados(), null, 2)], {type: 'application/json'});
   const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'bora-jovem-resumo.json'; a.click();
 };
 load(); setInterval(load, 5000);

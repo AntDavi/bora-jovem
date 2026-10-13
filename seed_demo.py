@@ -60,7 +60,11 @@ for i, nome in enumerate(nomes, 1):
         ev(i, "bloqueado", ts(random.randint(0, entrada)), "audiovisual")
     if random.random() < 0.6:
         ev(i, "vagas", ts(random.randint(0, entrada)), det=bairro)
-    c.execute("INSERT INTO jovens (id,nome,bairro,trilha) VALUES (?,?,?,?)", (i, nome, bairro, trilha_ativa))
+    sit = random.choices(["estuda", "trabalha", "ambos", "nemnem"], weights=[3, 3, 2, 4])[0]
+    obj = random.choice(["renda", "emprego", "negocio", "profissao"])
+    gostos = ",".join(random.sample(["video", "musica", "arte", "foto"], random.randint(1, 3)))
+    c.execute("INSERT INTO jovens (id,nome,bairro,trilha,situacao,objetivo,gostos) VALUES (?,?,?,?,?,?,?)",
+              (i, nome, bairro, trilha_ativa, sit, obj, gostos))
 
 c.commit()
 print("demo.db criado. Rode: DB_PATH=demo.db python dashboard.py")

@@ -1,0 +1,21 @@
+﻿id,nome,bairro,situacao,objetivo,gostos,trilha_ativa,licoes_concluidas,primeiro_registro,ultima_atividade
+1,Ana,Paraisópolis,ambos,renda,"foto,video,arte",audiovisual,8,2026-10-11 12:45:20,2026-10-13 18:45:20
+2,Bruno,Capão Redondo,estuda,renda,"video,arte,foto",musica,1,2026-10-05 09:45:20,2026-10-11 17:45:20
+3,Carla,Heliópolis,estuda,negocio,"foto,musica,arte",musica,2,2026-10-03 10:45:20,2026-10-11 07:45:20
+4,Diego,Paraisópolis,nemnem,profissao,video,,0,2026-10-04 17:45:20,2026-10-08 16:45:20
+5,Elisa,Cidade Tiradentes,nemnem,negocio,"foto,musica,arte",musica,4,2026-10-04 06:45:20,2026-10-12 18:45:20
+6,Felipe,Paraisópolis,estuda,profissao,"arte,video,musica",foto,3,2026-10-13 06:45:20,2026-10-13 18:45:20
+7,Gabi,Cidade Tiradentes,estuda,negocio,musica,musica,3,2026-10-09 07:45:20,2026-10-12 08:45:20
+8,Hugo,Heliópolis,trabalha,profissao,musica,musica,7,2026-10-05 06:45:20,2026-10-08 18:45:20
+9,Iara,Capão Redondo,estuda,negocio,"video,foto,arte",,0,2026-10-10 11:45:20,2026-10-13 17:45:20
+10,João,Cidade Tiradentes,trabalha,emprego,"video,foto,musica",design,8,2026-10-07 11:45:20,2026-10-10 17:45:20
+11,Kaique,Brasilândia,nemnem,negocio,"arte,video,musica",,0,2026-10-02 10:45:20,2026-10-03 17:45:20
+12,Lara,Brasilândia,nemnem,renda,"foto,musica",foto,4,2026-10-05 06:45:20,2026-10-06 15:45:20
+13,Marcos,Brasilândia,nemnem,renda,"arte,foto",musica,4,2026-10-02 07:45:20,2026-10-06 15:45:20
+14,Nina,Capão Redondo,nemnem,profissao,foto,,0,2026-09-30 08:45:20,2026-09-30 08:45:20
+15,Otávio,Paraisópolis,ambos,profissao,"arte,video,foto",design,3,2026-10-12 06:45:20,2026-10-13 16:45:20
+16,Paula,Capão Redondo,trabalha,emprego,arte,design,3,2026-10-13 06:45:20,2026-10-13 16:45:20
+17,Rafa,Heliópolis,ambos,negocio,"foto,video,arte",foto,7,2026-10-03 09:45:20,2026-10-06 09:45:20
+18,Sofia,Brasilândia,nemnem,renda,"arte,foto",,0,2026-10-10 14:45:20,2026-10-13 06:45:20
+19,Tiago,Cidade Tiradentes,trabalha,emprego,"arte,foto,video",,0,2026-10-04 10:45:20,2026-10-05 06:45:20
+20,Vitória,Heliópolis,trabalha,emprego,"arte,video,foto",,0,2026-10-11 12:45:20,2026-10-12 17:45:20
