@@ -1,0 +1,8 @@
+# Deploy do dashboard público (dados fictícios) no Render: https://render.com -> New + -> Blueprint
+services:
+  - type: web
+    name: bora-jovem-dashboard
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python seed_demo.py && DB_PATH=demo.db HOST=0.0.0.0 python dashboard.py

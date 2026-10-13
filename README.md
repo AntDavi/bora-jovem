@@ -27,3 +27,7 @@ DB_PATH=jovens.db .venv/bin/python dashboard.py        # http://localhost:8765 (
 - `db.py` — banco SQLite e registro de eventos
 - `dashboard.py` / `dashboard.html` — painel
 - `seed_demo.py` — gera dados fictícios para demonstração
+
+## Dashboard público (demo)
+
+O `render.yaml` publica o painel no Render com **dados fictícios** gerados por `seed_demo.py` a cada start. Nunca aponte o painel público para o `jovens.db` real: ele não tem login.
